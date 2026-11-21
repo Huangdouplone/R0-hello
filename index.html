@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>R0：从零开始 · 四站学习系列</title>
+<meta name="description" content="R0：从零开始系列门户。七语言编程、C++/Python 与 AGI、大模型、办公软件，四个纯静态学习站的公开入口，打开网页即可学习。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f7ed8'/%3E%3Ctext x='32' y='42' font-size='30' text-anchor='middle' fill='white' font-family='Arial'%3ER0%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --blue:#2f7ed8;--green:#2e9e5b;--amber:#f0a020;--red:#e2553b;--purple:#8a63d2;
+  --bg:#eef2f6;
+  --ink:#0d1219;--fg:#1c2836;--sub:#5c6a7a;
+  --glass:rgba(255,255,255,.4);
+  --glass-line:rgba(255,255,255,.55);
+  --chip:rgba(255,255,255,.38);
+  --shadow:0 10px 30px rgba(35,48,68,.10);
+}
+[data-theme=dark]{
+  --bg:#121821;
+  --ink:#eef4fb;--fg:#e6edf5;--sub:#9aa7b6;
+  --glass:rgba(18,26,38,.4);
+  --glass-line:rgba(255,255,255,.14);
+  --chip:rgba(255,255,255,.08);
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit;cursor:pointer}
+
+/* ---- 动态流光全页背景 ---- */
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(64px);opacity:.55;will-change:transform}
+.b1{width:54vmax;height:54vmax;left:-14vmax;top:-16vmax;
+  background:radial-gradient(circle at 35% 35%,#9cc6f2,transparent 62%);
+  animation:drift1 26s ease-in-out infinite alternate}
+.b2{width:46vmax;height:46vmax;right:-12vmax;top:16vh;
+  background:radial-gradient(circle at 60% 40%,#a5e3bd,transparent 62%);
+  animation:drift2 31s ease-in-out infinite alternate}
+.b3{width:42vmax;height:42vmax;left:20vw;bottom:-18vmax;
+  background:radial-gradient(circle at 50% 50%,#f3d9a4,transparent 62%);
+  animation:drift3 24s ease-in-out infinite alternate}
+.sheen{position:absolute;inset:-25%;
+  background:conic-gradient(from 0deg,rgba(255,255,255,0),rgba(255,255,255,.35),rgba(255,255,255,0),rgba(255,255,255,.22),rgba(255,255,255,0));
+  filter:blur(46px);opacity:.28;animation:spin 46s linear infinite}
+@keyframes drift1{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(16vw,14vh,0) scale(1.15)}}
+@keyframes drift2{from{transform:translate3d(0,0,0) scale(1.1)}to{transform:translate3d(-14vw,10vh,0) scale(.95)}}
+@keyframes drift3{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(10vw,-12vh,0) scale(1.2)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+[data-theme=dark] .blob{opacity:.5}
+[data-theme=dark] .b1{background:radial-gradient(circle at 35% 35%,rgba(47,126,216,.6),transparent 62%)}
+[data-theme=dark] .b2{background:radial-gradient(circle at 60% 40%,rgba(46,158,91,.5),transparent 62%)}
+[data-theme=dark] .b3{background:radial-gradient(circle at 50% 50%,rgba(138,99,210,.45),transparent 62%)}
+[data-theme=dark] .sheen{opacity:.10}
+@media (prefers-reduced-motion:reduce){.blob,.sheen{animation:none}}
+
+main{max-width:1120px;margin:0 auto;padding:0 18px 56px;position:relative}
+.hero{padding:clamp(44px,9vh,84px) 0 30px}
+.eyebrow{margin:0 0 12px;color:var(--green);font-weight:700;letter-spacing:.08em;font-size:13px}
+h1{margin:0;font-size:clamp(34px,7vw,58px);line-height:1.15;letter-spacing:-.02em;font-weight:800;color:var(--ink)}
+.tools{
+  display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;
+  margin-top:26px;padding:8px;border-radius:14px;
+  background:var(--glass);border:1px solid var(--glass-line);box-shadow:var(--shadow);
+  backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);
+}
+.tools button,.tools a{
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--glass-line);background:transparent;color:var(--fg);
+  border-radius:9px;padding:7px 14px;font-size:14px;font-weight:600;line-height:1.2;white-space:nowrap;
+}
+.tools button:hover,.tools a:hover{background:rgba(255,255,255,.35);text-decoration:none}
+[data-theme=dark] .tools button:hover,[data-theme=dark] .tools a:hover{background:rgba(255,255,255,.10)}
+
+section.block{margin-top:46px}
+.block h2{margin:0 0 18px;font-size:clamp(24px,4.5vw,32px);letter-spacing:-.01em;font-weight:800;color:var(--ink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+/* ---- 40% 透度毛玻璃卡片 ---- */
+.card{
+  display:flex;flex-direction:column;min-height:230px;padding:20px;border-radius:16px;color:var(--fg);
+  background:var(--glass);border:1px solid var(--glass-line);box-shadow:var(--shadow);
+  backdrop-filter:blur(18px) saturate(1.35);-webkit-backdrop-filter:blur(18px) saturate(1.35);
+  transition:transform .15s,border-color .15s,box-shadow .15s;
+}
+.card:hover{transform:translateY(-3px);border-color:var(--blue);text-decoration:none;box-shadow:0 14px 36px rgba(35,48,68,.16)}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.badge{font-size:12px;font-weight:700;color:var(--sub);letter-spacing:.08em}
+.icon{font-size:28px;line-height:1}
+.card h3{margin:0 0 2px;font-size:18px;color:var(--ink)}
+.card .sub{margin:0;color:var(--green);font-weight:600;font-size:14px}
+.card .desc{margin:12px 0;color:var(--sub);font-size:14px;flex:1}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.meta li{
+  background:var(--chip);border:1px solid var(--glass-line);border-radius:999px;
+  padding:3px 9px;font-size:12px;color:var(--sub);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.go{font-weight:700;color:var(--blue)}
+footer{padding:24px 18px;text-align:center;color:var(--sub);font-size:13px}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+@media(max-width:640px){
+  main{padding:0 14px 40px}
+  .hero{padding:34px 0 20px}
+  .tools{width:100%}
+  .tools button,.tools a{flex:1 1 auto;text-align:center}
+  .card{min-height:0}
+}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="sheen"></div>
+</div>
+
+<main>
+  <div class="hero">
+    <p class="eyebrow" data-i18n="eyebrow">拾色造梦企划 · EDU 学习系列</p>
+    <h1 data-i18n="h1">R0:从零开始</h1>
+    <div class="tools">
+      <button id="langBtn" type="button" aria-label="Switch language">EN</button>
+      <button id="themeBtn" type="button" aria-label="切换主题">◐</button>
+      <a href="https://github.com/huangdouplone" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+
+  <section class="block" id="sites">
+    <h2 data-i18n="sitesTitle">从这开始</h2>
+    <div class="cards">
+      <a class="card" href="https://huangdouplone.github.io/R0-hello-world/" target="_blank" rel="noopener">
+        <div class="card-top"><span class="badge">01 / PROGRAMMING</span><span class="icon">🌱</span></div>
+        <h3>R0:hello world</h3>
+        <p class="sub" data-i18n="c1sub">七语言编程课</p>
+        <p class="desc" data-i18n="c1desc">Python、C、C++、Java、JavaScript、C#、Go。先做 35 题摸底，再按阶段推进，七门语言横向对照。</p>
+        <ul class="meta"><li data-i18n="c1m1">62 阶段</li><li data-i18n="c1m2">260 课节</li><li data-i18n="c1m3">311 实战</li></ul>
+        <span class="go" data-i18n="enter">进入站点 →</span>
+      </a>
+      <a class="card" href="https://huangdouplone.github.io/R0-hello-agi/" target="_blank" rel="noopener">
+        <div class="card-top"><span class="badge">02 / AGI</span><span class="icon">⚙️</span></div>
+        <h3>R0:hello agi</h3>
+        <p class="sub" data-i18n="c2sub">C++ / Python 双路线</p>
+        <p class="desc" data-i18n="c2desc">同一批阶段池，两条学习顺序。从 C++ 地基走到机器学习与深度学习，也可以切到 Python 路线。</p>
+        <ul class="meta"><li data-i18n="c2m1">53 阶段</li><li data-i18n="c2m2">330 课节</li><li data-i18n="c2m3">266 实战</li></ul>
+        <span class="go" data-i18n="enter">进入站点 →</span>
+      </a>
+      <a class="card" href="https://huangdouplone.github.io/R0-hello-agent/" target="_blank" rel="noopener">
+        <div class="card-top"><span class="badge">03 / LLM</span><span class="icon">🔗</span></div>
+        <h3>R0:hello agent</h3>
+        <p class="sub" data-i18n="c3sub">大模型课</p>
+        <p class="desc" data-i18n="c3desc">提示词、上下文、RAG、MCP 和 Agent 是怎么串起来的，配章节测评和动手实战。</p>
+        <ul class="meta"><li data-i18n="c3m1">14 章</li><li data-i18n="c3m2">82 课节</li><li data-i18n="c3m3">14 实战</li></ul>
+        <span class="go" data-i18n="enter">进入站点 →</span>
+      </a>
+      <a class="card" href="https://huangdouplone.github.io/R0-hello-office/" target="_blank" rel="noopener">
+        <div class="card-top"><span class="badge">04 / OFFICE</span><span class="icon">🗂️</span></div>
+        <h3>R0:hello office</h3>
+        <p class="sub" data-i18n="c4sub">办公软件课</p>
+        <p class="desc" data-i18n="c4desc">Word、Excel、PPT、PDF。Microsoft Office 与 WPS 双路线切换，同一件事给两条操作路径。</p>
+        <ul class="meta"><li data-i18n="c4m1">8 章</li><li data-i18n="c4m2">39 课节</li><li data-i18n="c4m3">8 实战</li></ul>
+        <span class="go" data-i18n="enter">进入站点 →</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span data-i18n="foot">© 2026 黄豆666 · MIT License · 内容与代码由 AI 辅助生成 / 组装</span>
+</footer>
+
+<script>
+(function(){
+  var D={
+    zh:{eyebrow:"拾色造梦企划 · EDU 学习系列",h1:"R0:从零开始",sitesTitle:"从这开始",c1sub:"七语言编程课",c1desc:"Python、C、C++、Java、JavaScript、C#、Go。先做 35 题摸底，再按阶段推进，七门语言横向对照。",c1m1:"62 阶段",c1m2:"260 课节",c1m3:"311 实战",c2sub:"C++ / Python 双路线",c2desc:"同一批阶段池，两条学习顺序。从 C++ 地基走到机器学习与深度学习，也可以切到 Python 路线。",c2m1:"53 阶段",c2m2:"330 课节",c2m3:"266 实战",c3sub:"大模型课",c3desc:"提示词、上下文、RAG、MCP 和 Agent 是怎么串起来的，配章节测评和动手实战。",c3m1:"14 章",c3m2:"82 课节",c3m3:"14 实战",c4sub:"办公软件课",c4desc:"Word、Excel、PPT、PDF。Microsoft Office 与 WPS 双路线切换，同一件事给两条操作路径。",c4m1:"8 章",c4m2:"39 课节",c4m3:"8 实战",enter:"进入站点 →",foot:"© 2026 黄豆666 · MIT License · 内容与代码由 AI 辅助生成 / 组装"},
+    en:{eyebrow:"Shise Zaomeng · EDU series",h1:"R0: From Zero",sitesTitle:"Start here",c1sub:"Seven-language programming",c1desc:"Python, C, C++, Java, JavaScript, C# and Go. A 35-question placement test finds your starting point, then stages and cross-language notes take over.",c1m1:"62 stages",c1m2:"260 lessons",c1m3:"311 labs",c2sub:"C++ / Python routes",c2desc:"One stage pool, two orders. Go from C++ basics to machine learning and deep learning, or switch to the Python route.",c2m1:"53 stages",c2m2:"330 lessons",c2m3:"266 labs",c3sub:"Large models",c3desc:"How prompting, context, RAG, MCP and agents fit together, with chapter quizzes and hands-on labs.",c3m1:"14 chapters",c3m2:"82 lessons",c3m3:"14 labs",c4sub:"Office software",c4desc:"Word, Excel, PowerPoint and PDF. Switch between Microsoft Office and WPS; every lesson gives both paths.",c4m1:"8 chapters",c4m2:"39 lessons",c4m3:"8 labs",enter:"Open site →",foot:"© 2026 Huangdou666 · MIT License · Content and code assembled with AI assistance"}
+  };
+  var lang='zh';
+  try{lang=localStorage.getItem('r0_portal_lang')||'zh';}catch(e){}
+  function applyLang(){
+    document.documentElement.lang=lang==='en'?'en':'zh-CN';
+    var d=D[lang]||D.zh;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){var v=d[el.getAttribute('data-i18n')];if(v!=null)el.textContent=v;});
+    document.getElementById('langBtn').textContent=lang==='en'?'中':'EN';
+  }
+  document.getElementById('langBtn').addEventListener('click',function(){lang=lang==='en'?'zh':'en';try{localStorage.setItem('r0_portal_lang',lang);}catch(e){}applyLang();});
+  var theme='light';
+  try{theme=localStorage.getItem('r0_portal_theme')||'light';}catch(e){}
+  document.documentElement.setAttribute('data-theme',theme);
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    theme=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',theme);
+    try{localStorage.setItem('r0_portal_theme',theme);}catch(e){}
+  });
+  applyLang();
+})();
+</script>
+</body>
+</html>
